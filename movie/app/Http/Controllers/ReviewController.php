@@ -6,6 +6,10 @@ use App\Http\Resources\ReviewCollection;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Movie;
+
 
 class ReviewController extends Controller
 {
@@ -38,7 +42,24 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'rating'=>'required|integer|max:10',
+            'comment'=>'required|string|max:255',
+            'movie_id'=>'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
+        $review = Review::create([
+            'rating'=>$request->rating,
+            'comment'=>$request->comment,
+            'movie_id'=>$request->movie_id,
+            'user_id'=>Auth::user()->id
+        ]);
+
+        return response()->json(['Review created successfully.', new ReviewResource($review)]);
     }
 
     /**
@@ -72,7 +93,22 @@ class ReviewController extends Controller
      */
     public function update(Request $request, Review $review)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'rating'=>'required|integer|max:10',
+            'comment'=>'required|string|max:255',
+            'movie_id'=>'required'
+        ]);
+
+        if($validator->fails()){
+            return response()->json($validator->errors());
+        }
+
+        $review->rating = $request->rating;
+        $review->comment = $request->comment;
+        $review->movie_id = $request->movie_id;
+        $review->save();
+
+        return response()->json(['Review updated successfully.', new ReviewResource($review)]);
     }
 
     /**
@@ -83,6 +119,7 @@ class ReviewController extends Controller
      */
     public function destroy(Review $review)
     {
-        //
+        $review->delete();
+        return response()->json('Review deleted successfully.');
     }
 }
