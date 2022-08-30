@@ -20,8 +20,8 @@ class ReviewController extends Controller
      */
     public function index()
     {
-       $reviews = Review::all();
-       return  new ReviewCollection($reviews);
+        $reviews = Review::all();
+        return  new ReviewCollection($reviews);
     }
 
     /**
@@ -43,20 +43,20 @@ class ReviewController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'rating'=>'required|integer|max:10',
-            'comment'=>'required|string|max:255',
-            'movie_id'=>'required'
+            'rating' => 'required|integer|max:10',
+            'comment' => 'required|string|max:255',
+            'movie_id' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
         $review = Review::create([
-            'rating'=>$request->rating,
-            'comment'=>$request->comment,
-            'movie_id'=>$request->movie_id,
-            'user_id'=>Auth::user()->id
+            'rating' => $request->rating,
+            'comment' => $request->comment,
+            'movie_id' => $request->movie_id,
+            'user_id' => Auth::user()->id
         ]);
 
         return response()->json(['Review created successfully.', new ReviewResource($review)]);
@@ -70,7 +70,7 @@ class ReviewController extends Controller
      */
     public function show(Review $review)
     {
-       return new ReviewResource($review);
+        return new ReviewResource($review);
     }
 
     /**
@@ -94,12 +94,12 @@ class ReviewController extends Controller
     public function update(Request $request, Review $review)
     {
         $validator = Validator::make($request->all(), [
-            'rating'=>'required|integer|max:10',
-            'comment'=>'required|string|max:255',
-            'movie_id'=>'required'
+            'rating' => 'required|integer|max:10',
+            'comment' => 'required|string|max:255',
+            'movie_id' => 'required'
         ]);
 
-        if($validator->fails()){
+        if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
